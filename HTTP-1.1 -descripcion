@@ -1,0 +1,92 @@
+César Martín Ortiz Alarcon
+3-06043220-0
+
+Descripción del protocolo HTTP 1.1, de acuerdo a la documentación que podemos
+encontrar en http://www.w3.org/Protocols/HTTP/1.1/spec#Protocol-Parameters
+
+
+FORMATO DE VERSIONES DE HTTP
+HTTP/[0-9].[0-9].
+Nosotros usamos: HTTP/1.1
+
+URL:
+HTTP-URL ::= "http:" "//" <host> [ ":" <portno> ] [<path>]
+Si no se da un puerto específico, se asume que se va a usar el 80.
+
+Formato de fecha y hora:
+
+    Sun, 06 Nov 1994 08:49:37 GMT  ; RFC 822, updated by RFC 1123
+    Sunday, 06-Nov-94 08:49:37 GMT ; RFC 850, obsoleted by RFC 1036
+    Sun Nov  6 08:49:37 1994 
+
+Las fechas siempre usan horario GMT.
+
+El charset es el estándar de C99 (US-ASCII)
+
+MIME-types
+MEDIA-TYPE ::= <type> "/" <subtype> (";" PARAMETER)*
+PARAMETER ::= <attribute> "=" <token | quoted-string>
+
+Nombres de productos (navegadores, servidores, clientes)
+PRODUCT ::= <name> ["/" <version>]
+
+Encabezados de mensajes:
+HTTP-HEADER ::= <field> ":" [FIELD-VALUE] CRLF
+FIELD-VALUE ::= (<content> | LWS)*
+
+Request
+"GET" SP REQUEST-URI CRLF 
+
+Métodos
+METHOD ::= "GET" | "HEAD" | "POST" | <extension-method>
+
+Si se recibe; en el servidor, un método no reconocido, se debe devolver un
+código de error 501.
+Un ejemplo: GET /path.ext HTTP/1.1
+
+Encabezado de solicitud:
+REQUEST-HEADER ::= <authorization> | <from> | <modifed-since> | <referer> |
+	<user-agent>
+
+Respuesta:
+RESPONSE ::= SIMPLE-RESPONSE | FULL-RESPONSE
+SIMPLE-RESPONSE ::= ENTITY-BODY
+FULL-RESPONSE ::= STATUS-LINE | (GENERAL-HEADER | RESPONSE-HEADER |
+	ENTITY-HEADER)* CRLF ENTITY-BODY
+STATUS-LINE ::= HTTP-VERSION SP STATUS-CODE SP <reason-phrase> CRLF
+STATUS-CODE ::= "200" ; 0K
+	| "201"; Creado
+	| "202"; Aceptado
+	| "204"; Sin contenido
+	| "301"; Migración permanente
+	| "302"; Migración temporal
+	| "304"; Sin modificar
+	| "400"; Solicitud inválida
+	| "401"; Sin autorización
+	| "403"; Prohibido
+	| "404"; No encontrado
+	| "500"; Error interno del servidor
+	| "501"; No implementado
+	| "502"; Gatway inválido
+	| "503"; Servicio no disponible
+	| <extension-code>
+ENTITY-BODY ::= CONTENT-ENCODING (CONTENT-TYPE (<data>))
+
+Una respuesta simple provoca el comportameinto de cerrar la conexión por parte
+del servidor.
+
+Sobre los métodos:
+GET: Solicita información; solicita devolución de datos en el ENTITY-BODY.
+HEAD: Idéntico a GET pero no se responde un ENTITY-BODY.
+POST: Solicita la entrega de datos envueltos en el REQUEST-URI. Se debe incuir
+un CONTENT-LENGTH con cada POST que se haga.
+
+CONTENT-LENGTH ::= "Content-Length" ":" <digit>+
+CONTENT-TYPE ::= "Content-Type" ":" <media-type>
+DATE ::= "Date" ":" <http-date>
+EXPIRES ::= "Expires" ":" <http-date>
+MODIFIED-SINCE ::= "If-Modified-Since" ":" <http-date>
+LOCATION ::= "Location" ":" <absoluteURI>
+SERVER ::= "Server" ":" (product | comment)+
+USER-AGENT ::= "User-Agent" ":" (product | comment)+
+
